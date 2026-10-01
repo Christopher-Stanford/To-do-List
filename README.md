@@ -1,1 +1,1 @@
-This is the basic layout I will add more soon.
+This is the basic layout for now I will add more soon.
