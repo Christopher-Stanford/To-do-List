@@ -1,0 +1,10 @@
+#taskList {
+    list-style: none;
+    padding: 0;
+}
+
+#taskList li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

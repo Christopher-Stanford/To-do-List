@@ -4,7 +4,7 @@ const taskList = document.getElementById('taskList');
 const taskCount = document.getElementById('taskCount');
 const clearBtn = document.getElementById('clearBtn');
 
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
 renderTasks();
 
@@ -17,8 +17,8 @@ taskInput.addEventListener('keypress', function(e) {
 });
 
 clearBtn.addEventListener('click', function() {
-    tasks = [];
-    renderTasks();
+    tasks = tasks.filter(task => !task.completed);
+    saveAndRenderTasks();
 });
 
 function addTask() {
@@ -33,8 +33,13 @@ function addTask() {
 
         tasks.push(newTask);
         taskInput.value = '';
-        renderTasks();
+        saveAndRenderTasks();
     }
+}
+
+function saveAndRenderTasks() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    renderTasks();
 }
 
 function renderTasks() {
@@ -42,19 +47,24 @@ function renderTasks() {
 
     tasks.forEach(task => {
         const li = document.createElement('li');
-        li.textContent = task.text;
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = task.completed;
 
+        checkbox.addEventListener('change', function() {
+            task.completed = checkbox.checked;
+            saveAndRenderTasks();
+        });
+
         if (task.completed) {
-            li.style.textDecoration = 'line-through';
+            li.style.opacity = '0.7';
         }
 
-        taskList.appendChild(checkbox);
+        li.appendChild(checkbox);
+        li.appendChild(document.createTextNode(task.text));
         taskList.appendChild(li);
     });
 
-    taskCount.textContent = `${tasks.length}`;
+    taskCount.textContent = `${tasks.filter(task => !task.completed).length}`;
 }
