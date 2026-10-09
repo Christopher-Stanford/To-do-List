@@ -1,16 +1,27 @@
-const taskInput = document.getElementById('taskInput');
-const addTaskButton = document.getElementById('addTaskButton');
+const addTaskBtn = document.getElementById('addTaskBtn');
 const taskList = document.getElementById('taskList');
 const taskCount = document.getElementById('taskCount');
 const clearBtn = document.getElementById('clearBtn');
+
+const taskDialog = document.getElementById('taskDialog');
+const taskName = document.getElementById('taskName');
+const cancelBtn = document.getElementById('cancelBtn');
+const confirmBtn = document.getElementById('confirmBtn');
 
 let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
 renderTasks();
 
-addTaskButton.addEventListener('click', addTask);
+addTaskBtn.addEventListener('click', function() {
+    taskName.value = '';
+    taskDialog.showModal();
+});
 
-taskInput.addEventListener('keypress', function(e) {
+confirmBtn.addEventListener('click', addTask);
+
+cancelBtn.addEventListener('click', taskDialog.close);
+
+taskName.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         addTask();
     }
@@ -22,7 +33,7 @@ clearBtn.addEventListener('click', function() {
 });
 
 function addTask() {
-    const taskText = taskInput.value.trim();
+    const taskText = taskName.value.trim();
     if (taskText) {
 
         const newTask = {
@@ -32,9 +43,10 @@ function addTask() {
         };
 
         tasks.push(newTask);
-        taskInput.value = '';
+        taskName.value = '';
         saveAndRenderTasks();
     }
+    taskDialog.close();
 }
 
 function saveAndRenderTasks() {

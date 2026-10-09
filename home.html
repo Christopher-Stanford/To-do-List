@@ -12,8 +12,7 @@
         <h1>To-Do List</h1>
         
         <div>
-            <input type="text" id="taskInput" placeholder="Add a new task...">
-            <button id="addTaskButton">Add Task</button> 
+            <button id="addTaskBtn">Add Task</button>
         </div>
         
         <ul id="taskList"></ul>
@@ -23,6 +22,18 @@
             <button id="clearBtn">Clear Completed Tasks</button>
         </div>
     </div>
+
+    <dialog id="taskDialog">
+        <form method="dialog">
+            <h2>Add New Task</h2>
+            <input type="text" id="taskName" placeholder="Enter task name...">
+            <div class="dialog-buttons">
+                <button id="cancelBtn">Cancel</button>
+                <button id="confirmBtn">Add</button>
+            </div>
+        </form>
+    </dialog>
+
     <script src="script.js"></script>
 </body>
 </html>
