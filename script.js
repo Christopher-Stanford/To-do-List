@@ -5,6 +5,7 @@ const clearBtn = document.getElementById('clearBtn');
 
 const taskDialog = document.getElementById('taskDialog');
 const taskName = document.getElementById('taskName');
+const taskDate = document.getElementById('taskDate');
 const cancelBtn = document.getElementById('cancelBtn');
 const confirmBtn = document.getElementById('confirmBtn');
 
@@ -17,15 +18,15 @@ addTaskBtn.addEventListener('click', function() {
     taskDialog.showModal();
 });
 
-confirmBtn.addEventListener('click', addTask);
-
-cancelBtn.addEventListener('click', taskDialog.close);
-
-taskName.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && taskDialog.open) {
         addTask();
     }
 });
+
+confirmBtn.addEventListener('click', addTask);
+
+cancelBtn.addEventListener('click', taskDialog.close);
 
 clearBtn.addEventListener('click', function() {
     tasks = tasks.filter(task => !task.completed);
@@ -34,16 +35,19 @@ clearBtn.addEventListener('click', function() {
 
 function addTask() {
     const taskText = taskName.value.trim();
-    if (taskText) {
+    const dueDate = taskDate.value;
 
+    if (taskText) {
         const newTask = {
             id: Date.now(),
             text: taskText,
+            date: dueDate,
             completed: false
         };
 
         tasks.push(newTask);
         taskName.value = '';
+   
         saveAndRenderTasks();
     }
     taskDialog.close();
@@ -70,11 +74,35 @@ function renderTasks() {
         });
 
         if (task.completed) {
-            li.style.opacity = '0.7';
+            li.style.opacity = '0.6';
         }
 
         li.appendChild(checkbox);
         li.appendChild(document.createTextNode(task.text));
+
+        if (task.date) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            const dueDate = new Date(task.date);
+            let dueText = ' Due: ' + task.date;
+
+            if (task.date < today.toISOString().split('T')[0]) {
+                dueText = ` Due: ${task.date} (Overdue)`;
+            } else if (task.date === today.toISOString().split('T')[0]) {
+                dueText = ` Due: Today`;
+            } else if (task.date === tomorrow.toISOString().split('T')[0]) {
+                dueText = ` Due: Tomorrow`;
+            } else if (task.date < new Date(today.setDate(today.getDate() + 7)).toISOString().split('T')[0]) {
+                dueText = ` Due: ${task.date} (This Week)`;
+            }
+
+            li.appendChild(document.createTextNode(`${dueText}`));
+        }
+
         taskList.appendChild(li);
     });
 
